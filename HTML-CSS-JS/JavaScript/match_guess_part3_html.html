@@ -44,26 +44,7 @@
             //remove the last child from rightside
             theRightSide.firstChild.removeChild(theRightSide.firstChild.lastChild)
 
-            //click events
-            theLeftSide.lastChild.onclick = function nextLevel(event) {
-                theRightSide.removeChild(theRightSide.lastChild)
-                while (theLeftSide.firstChild) {
-                    theLeftSide.removeChild(theLeftSide.firstChild);
-                }
-                //theLeftSide.removeChild(theLeftSide.lastChild)
-                event.stopPropagation();
-                numberOfFaces += 5;
-                generateFaces();
-            };
-
-            theBody.onclick = function gameOver() {
-                alert("Game Over!");
-                theBody.onclick = null;
-                theLeftSide.lastChild.onclick = null;
-                
-
-            }; 
-    	}
+       
  
         window.onload = function(){
             generateFaces()
