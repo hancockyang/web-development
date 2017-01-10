@@ -98,7 +98,7 @@
                 </form> -->
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a data-toggle="modal" data-target="#loginModal">
+                        <a id="loginBtn">
                             <span class="glyphicon glyphicon-log-in"></span>
                             Login
                         </a>
@@ -124,12 +124,12 @@
                         <div class="form-group">
                             
                             <label class="sr-only" for="email">Email address</label>
-                            <input id="email" type="email" class="form-control input-sm" name="email" placeholder="Email Address"> 
+                            <input id="email" type="email" class="form-control input-xs" name="email" placeholder="Email Address" size="10"> 
                         </div>
                         <div class="form-group">
                             
                             <label class="sr-only" for="password">Password</label>
-                            <input id="password" type="password" class="form-control input-sm" name="password" placeholder="Password">                                        
+                            <input id="password" type="password" class="form-control input-xs" name="password" placeholder="Password" size="10">                                        
                         </div>
                         <div class="form-group">
                             
@@ -167,7 +167,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-2">
                     <p style="padding:40px;"></p>
-                    <a aria-controls="contactform" role="button" class="btn btn-warning btn-block" data-toggle="modal" data-target="#reserveModal" type="button">Reserve Table</a>
+                    <a aria-controls="contactform" role="button" class="btn btn-warning btn-block" id="reserveBtn" type="button">Reserve Table</a>
                 </div>
             </div>
 
@@ -519,11 +519,7 @@
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('[data-toggle="tooltip"]').tooltip();
-        })
-    </script>
+  
     <script>
         $(document).ready(function(){
             $("#mycarousel").carousel( { interval: 2000 } );
@@ -533,8 +529,16 @@
                         $("#carousel-play").click(function(){
                 $("#mycarousel").carousel('cycle');
             });
+            // $('[data-toggle="tooltip"]').tooltip();
+            $("#reserveBtn").click(function(){
+                $("#reserveModal").modal("toggle");
+            });
+            $("#loginBtn").click(function(){
+                $("#loginModal").modal("toggle");
+            });
         });
     </script>
+
 </body>
 
 </html>
