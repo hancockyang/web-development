@@ -68,15 +68,18 @@
               </div>
             </div>
             <div class="col-xs-9 col-xs-offset-1" ng-controller="DishCommentController">
-                <ul class="list-unstyled">
-                    <p>Task 3: Here you include the code to show the live preview of the comment</p>
-                    <p>The comment should be shown only when the form contains valid information and is not pristine</p>
+                <ul class="list-unstyled" ng-show="!commentForm.comment.$invalid ||!commentForm.comment.$pristine">
+                    <blockquote>
+                      <p>{{ comment.rating }} Stars</p>
+                      <p>{{ comment.comment }}</p>
+                      <footer>{{ comment.author }}</footer>
+                    </blockquote>
                 </ul>
                 <form class="form-horizontal" name="commentForm" ng-submit="submitComment()" novalidate>
                     <div class="form-group" ng-class="{ 'has-error' : commentForm.name.$invalid && !commentForm.name.$pristine }">
                         <label for="name" class="col-sm-2 control-label">Your Name</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="name" name="name" ng-model="Comment.Name" placeholder="Enter Your Name" required>
+                            <input type="text" class="form-control" id="name" name="name" ng-model="comment.author" placeholder="Enter Your Name" required>
                             <span ng-show="commentForm.name.$invalid && !commentForm.name.$pristine" class="help-block">Your name is required</span>
                         </div>
                         
@@ -87,11 +90,11 @@
                         <label for="stars" class="col-sm-2 control-label">Number of Stars</label>
                         <div class="col-sm-10">
                             <div class="col-sm-10">
-                                <label class="radio-inline" for="1"><input id="1" type="radio" name="stars" value="1" ng-model="Comment.Stars">  1</label>
-                                <label class="radio-inline" for="2"><input id="2" type="radio" name="stars" value="2" ng-model="Comment.Stars">  2</label>
-                                <label class="radio-inline" for="3"><input id="3" type="radio" name="stars" value="3" ng-model="Comment.Stars">  3</label>
-                                <label class="radio-inline" for="4"><input id="4" type="radio" name="stars" value="4" ng-model="Comment.Stars">  4</label>
-                                <label class="radio-inline" for="5"><input id="5" type="radio" name="stars" value="5" ng-model="Comment.Stars">  5</label>
+                                <label class="radio-inline" for="1"><input id="1" type="radio" name="stars" value="1" ng-model="comment.rating">  1</label>
+                                <label class="radio-inline" for="2"><input id="2" type="radio" name="stars" value="2" ng-model="comment.rating">  2</label>
+                                <label class="radio-inline" for="3"><input id="3" type="radio" name="stars" value="3" ng-model="comment.rating">  3</label>
+                                <label class="radio-inline" for="4"><input id="4" type="radio" name="stars" value="4" ng-model="comment.rating">  4</label>
+                                <label class="radio-inline" for="5"><input id="5" type="radio" name="stars" value="5" ng-model="comment.rating">  5</label>
                                
                             </div>
                             
@@ -100,7 +103,7 @@
                     <div class="form-group" ng-class="{ 'has-error' : commentForm.comment.$invalid && !commentForm.comment.$pristine }">
                         <label for="comment" class="col-sm-2 control-label">Your Comments</label>
                         <div class="col-sm-10">
-                            <textarea class="form-control" id="comment" name="comment" rows="12" ng-model="comment.comments" required></textarea>
+                            <textarea class="form-control" id="comment" name="comment" rows="12" ng-model="comment.comment" required></textarea>
                             <span ng-show="commentForm.comment.$invalid && !commentForm.comment.$pristine" class="help-block">Your comment is required</span>
                         </div>
                         
@@ -114,10 +117,10 @@
                 </form>
                 <div class="col-xs-12 col-sm-3">
                   <h3>Your Current Feedback</h3>
-                  <p>Name: {{Comment.Name}}</p>
-                  <p>Stars: {{Comment.Stars}}</p>
+                  <p>Name: {{comment.author}}</p>
+                  <p>rating: {{comment.rating}}</p>
                   
-                  <p>Comments: {{comment.comments}}</p>
+                  <p>Comments: {{comment.comment}}</p>
                 </div>
             </div>
             
