@@ -2,7 +2,7 @@
 
 angular.module('confusionApp')
 
-        .service('menuFactory', function () {
+        .service('menuFactory', function() {
     
             var dishes=[
                          {
@@ -238,21 +238,6 @@ angular.module('confusionApp')
                 }
                 
             ];
-
-
-            corpfac.getLeaders = function(){
-                    
-                    return leadership;
-                    
-            };
-
-            corpfac.getLeader = function(index){
-                    
-                    return leadershipp[index];
-                    
-            };
-
-            return corpfac;
      
             // Implement two functions, one named getLeaders,
             // the other named getLeader(index)

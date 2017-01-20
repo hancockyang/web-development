@@ -93,6 +93,21 @@ angular.module('confusionApp')
             $scope.commentForm.$setPristine();
             $scope.comment = {author:'', rating:"5" };
         }
-    }]); 
+    }])
 
+    // implement the IndexController and About Controller here 
+    .controller('IndexController', ['$scope', function($scope) {
+
+
+
+    }])
+
+    .controller('AboutController',['$scope', 'corporateFactory', function($scope,corporateFactory){
+
+       
+        $scope.leaders = corporateFactory.getLeaders();
+            
+
+
+    }])
 ;
