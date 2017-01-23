@@ -3,10 +3,11 @@ angular.module('confusionApp')
     .controller('MenuController',['$scope', 'menuFactory', function($scope, menuFactory) {
         $scope.tab = 1;
         $scope.filtText = '';
+        $scope.showDetails = false;
+        $scope.showMenu = true;
+        $scope.message = "Loading ...";
         
-        $scope.dishes= menuFactory.getDishes();
-        
-        
+        $scope.dishes = menuFactory.getDishes().query();
 
         $scope.select = function(setTab) {
             $scope.tab = setTab;
@@ -47,7 +48,7 @@ angular.module('confusionApp')
 
             $scope.sendFeedback = function() {
                 console.log($scope.feedback);
-                if ($scope.feedback.agree && ($scope.feedback.mychannel == "")&& !$scope.feedback.mychannel) {
+                if ($scope.feedback.agree && ($scope.feedback.mychannel === "")&& !$scope.feedback.mychannel) {
                     $scope.invalidChannelSelection = true;
                     console.log('incorrect');
                 }
@@ -59,7 +60,7 @@ angular.module('confusionApp')
 
                     $scope.feedbackForm.$setPristine();
                     console.log($scope.feedback);
-                };
+                }
             };
 
 
@@ -67,8 +68,12 @@ angular.module('confusionApp')
 
 
     .controller('DishDetailController', ['$scope','$stateParams', 'menuFactory', function($scope,$stateParams,menuFactory) {
-        var dish= menuFactory.getDish(parseInt($stateParams.id,10));                       
-        $scope.dish = dish;
+        
+                               
+        $scope.dish = {};
+        $scope.showDish = true;
+        $scope.message="Loading ...";
+        $scope.dish = menuFactory.getDishes().get({id:parseInt($stateParams.id,10)});
 
     }])
 
@@ -92,12 +97,30 @@ angular.module('confusionApp')
             
             $scope.commentForm.$setPristine();
             $scope.comment = {author:'', rating:"5" };
-        }
+        };
     }])
 
     // implement the IndexController and About Controller here 
-    .controller('IndexController', ['$scope', function($scope) {
-
+    .controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', function($scope, menuFactory, corporateFactory) {
+        $scope.featuredDish = {};
+        $scope.showDish = true;
+        $scope.message="Loading ...";
+        $scope.featuredDish = menuFactory.getDishes().get({id:0});
+        
+        $scope.featuredPromotion = {};
+        menuFactory.getPromotion(0)
+        .then(
+            function(response){
+                $scope.featuredPromotion=response.data;
+            }
+        );
+        $scope.executiveChef={};
+        corporateFactory.getLeader(3)
+        .then(
+            function(response){
+                $scope.executiveChef=response.data;
+            }
+        );
 
 
     }])
@@ -105,7 +128,13 @@ angular.module('confusionApp')
     .controller('AboutController',['$scope', 'corporateFactory', function($scope,corporateFactory){
 
        
-        $scope.leaders = corporateFactory.getLeaders();
+        $scope.leaders = {};
+        corporateFactory.getLeaders()
+        .then(
+            function(response){
+                $scope.leaders=response.data;
+            }
+        );
             
 
 
