@@ -51,7 +51,7 @@ angular.module('confusionApp')
         $scope.invalidChannelSelection = false;
     }])
 
-    .controller('FeedbackController', ['$scope', function($scope) {
+    .controller('FeedbackController', ['$scope', 'feedbackFactory',function($scope,feedbackFactory) {
 
             $scope.sendFeedback = function() {
                 console.log($scope.feedback);
@@ -60,7 +60,10 @@ angular.module('confusionApp')
                     console.log('incorrect');
                 }
                 else {
+                      
+
                     $scope.invalidChannelSelection = false;
+                    feedbackFactory.getFeedback().save($scope.feedback);  
                     $scope.feedback = {mychannel:"", firstName:"", lastName:"",
                                        agree:false, email:"" };
                     $scope.feedback.mychannel="";
@@ -95,7 +98,7 @@ angular.module('confusionApp')
 
     .controller('DishCommentController', ['$scope','menuFactory',function($scope,menuFactory) {
             
-        $scope.comment = {author:'', rating:"5" };
+        $scope.comment = {rating:'5', comment:'', author:'' };
         //console.log(Comment.Name.$invalid);
         $scope.submitComment = function () {
             
@@ -107,13 +110,15 @@ angular.module('confusionApp')
             $scope.comment.date = new Date().toISOString();
             
             // Step 3: Push your comment into the dish's comment array
+            $scope.comment.rating=parseInt($scope.comment.rating);
             $scope.dish.comments.push($scope.comment);
+            
             menuFactory.getDishes().update({id:$scope.dish.id},$scope.dish);
             
             //Step 4: reset your form to pristine
             
             $scope.commentForm.$setPristine();
-            $scope.comment = {author:'', rating:"5" };
+            $scope.comment = {rating:'5', comment:'', author:'' };
         };
     }])
 
@@ -133,18 +138,33 @@ angular.module('confusionApp')
             }
         );
         
+        
+        
         $scope.featuredPromotion = {};
-        menuFactory.getPromotion(0)
-        .then(
+        $scope.showPromotion = false;
+        $scope.featuredPromotion = menuFactory.getPromotions().get({id:0})
+        .$promise.then(
             function(response){
-                $scope.featuredPromotion=response.data;
+                $scope.featuredPromotion = response;
+                $scope.showPromotion = true;
+            },
+            function(response){
+                $scope.message = "Error: "+response.status + " " + response.statusText;
             }
         );
+        
+        
         $scope.executiveChef={};
-        corporateFactory.getLeader(3)
-        .then(
+        $scope.showexecutiveChef = false;
+        $scope.executiveChef = corporateFactory.getLeaders().get({id:0})
+        .$promise.then(
             function(response){
-                $scope.executiveChef=response.data;
+                $scope.executiveChef=response;
+                $scope.showexecutiveChef = true;
+                
+            },
+            function(response){
+                $scope.message = "Error: "+response.status + " " + response.statusText;
             }
         );
 
@@ -155,11 +175,17 @@ angular.module('confusionApp')
 
        
         $scope.leaders = {};
-        corporateFactory.getLeaders()
-        .then(
+        $scope.showleaders = false;
+        $scope.leaders = corporateFactory.getLeaders().query()
+        .$promise.then(
             function(response){
-                $scope.leaders=response.data;
+                $scope.leaders=response;
+                $scope.showleaders = true;
+            },
+            function(response){
+                $scope.message = "Error: "+response.status + " " + response.statusText;
             }
+            
         );
             
 
