@@ -39,9 +39,41 @@ angular.module('conFusion.controllers', [])
       $scope.closeLogin();
     }, 1000);
   };
+    
+  $scope.reservation = {};  
+  // Create the reserve modal that we will use later
+  $ionicModal.fromTemplateUrl('templates/reserve.html', {
+    scope: $scope
+  }).then(function(modal) {
+    $scope.reserveform = modal;
+  });
+  
+  // Triggered in the reserve modal to close it
+  $scope.closeReserve = function() {
+    $scope.reserveform.hide();
+  };
+    
+    
+  // Open the reserve modal
+  $scope.reserve = function() {
+    $scope.reserveform.show();
+  };
+  
+    
+  // Perform the reserve action when the user submits the reserve form
+  $scope.doReserve = function() {
+    console.log('Doing reservation', $scope.reservation);
+
+    // Simulate a reservation delay. Remove this and replace with your reservation
+    // code if using a server system
+    $timeout(function() {
+      $scope.closeReserve();
+    }, 1000);
+  };        
+    
 })
 
-.controller('MenuController', ['$scope', 'menuFactory','baseURL', function($scope, menuFactory,baseURL) {
+.controller('MenuController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate', function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate) {
             
             $scope.baseURL=baseURL
             $scope.tab = 1;
@@ -83,6 +115,12 @@ angular.module('conFusion.controllers', [])
     
             $scope.toggleDetails = function() {
                 $scope.showDetails = !$scope.showDetails;
+            };
+    
+            $scope.addFavorite = function (index) {
+                console.log("index is " + index);
+                favoriteFactory.addToFavorites(index);
+                $ionicListDelegate.closeOptionButtons();
             };
         }])
 

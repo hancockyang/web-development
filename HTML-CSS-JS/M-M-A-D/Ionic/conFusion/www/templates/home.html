@@ -5,8 +5,8 @@
             Our Lipsmacking Culinary Creations
             <span class="badge badge-assertive">{{dish.label}}</span>
         </div>
-        <div class="item item-thumbnail-left item-text-wrap">
-            <img ng-src="{{baseURL+dish.image}}" alt="Uthappizza">
+        <div class="item item-thumbnail-left item-text-wrap " >
+            <img ng-src="{{baseURL+dish.image}}" alt="Uthappizza" href="#/app/menu/{{dish.id}}">
             <h2>{{dish.name}}
              <span class="badge">{{dish.price | currency}}</span></h2>
             <p>{{dish.description}}</p>
