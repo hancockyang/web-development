@@ -156,15 +156,36 @@ angular.module('conFusion.controllers', [])
             };
         }])
 
-        .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory','baseURL', function($scope, $stateParams, menuFactory,baseURL) {
+        .controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory','baseURL', '$ionicPopover','favoriteFactory','$ionicModal', '$timeout',function($scope, $stateParams, menuFactory,baseURL, $ionicPopover,favoriteFactory,$ionicModal,$timeout) {
             
             $scope.baseURL = baseURL;
             $scope.dish = {};
             $scope.showDish = false;
             $scope.message="Loading ...";
             
+            
+            $ionicPopover.fromTemplateUrl('templates/dishdetailpopover.html', {
+              scope: $scope
+            }).then(function(popover) {
+              $scope.dishDetailsPopover = popover;
+            });
+            
+            $ionicModal.fromTemplateUrl('templates/dishcomments.html',{
+              scope: $scope
+            }).then(function(modal) {
+              $scope.commentModal = modal;
+            });
+            
+            
+            $scope.addFavorite = function (index) {
+                console.log("index is " + index);
+                favoriteFactory.addToFavorites(index);
+                $scope.dishDetailsPopover.hide();
+            };
+            
+            
             $scope.dish = menuFactory.getDishes().get({id:parseInt($stateParams.id,10)})
-            .$promise.then(
+            .$promise.then( 
                             function(response){
                                 $scope.dish = response;
                                 $scope.showDish = true;
@@ -174,6 +195,33 @@ angular.module('conFusion.controllers', [])
                             }
             );
 
+            
+            $scope.openCommentModal = function() {
+              
+              $scope.dishDetailsPopover.hide();
+              $timeout(function(){
+
+                $scope.commentModal.show();
+
+              }, 0);
+              
+            };
+            
+            $scope.closeCommentModal = function(){
+              $scope.commentModal.hide();
+            };
+            
+            $scope.newComment = {rating:5, comment:"", author:"", date:""};
+            $scope.submitComment = function () {
+                $scope.newComment.date = new Date().toISOString();
+                console.log($scope.newComment);
+                $scope.dish.comments.push($scope.newComment);
+                menuFactory.getDishes().update({id:$scope.dish.id},$scope.dish);
+                
+                $scope.newComment = {rating:5, comment:"", author:"", date:""};
+                $scope.commentModal.hide();
+            };
+            
             
         }])
 
@@ -187,7 +235,7 @@ angular.module('conFusion.controllers', [])
                 console.log($scope.mycomment);
                 
                 $scope.dish.comments.push($scope.mycomment);
-        menuFactory.getDishes().update({id:$scope.dish.id},$scope.dish);
+                menuFactory.getDishes().update({id:$scope.dish.id},$scope.dish);
                 
                 $scope.commentForm.$setPristine();
                 
@@ -234,5 +282,72 @@ angular.module('conFusion.controllers', [])
                     console.log($scope.leaders);
             
                     }])
+
+        .controller('FavoritesController', ['$scope', 'menuFactory', 'favoriteFactory', 'baseURL', '$ionicListDelegate',  '$ionicPopup', '$ionicLoading', '$timeout',function ($scope, menuFactory, favoriteFactory, baseURL, $ionicListDelegate, $ionicPopup, $ionicLoading, $timeout) {
+
+            $scope.baseURL = baseURL;
+            $scope.shouldShowDelete = false;
+            
+            
+            $ionicLoading.show({
+                template: '<ion-spinner></ion-spinner> Loading...'
+            });
+            
+            $scope.favorites = favoriteFactory.getFavorites();
+
+            $scope.dishes = menuFactory.getDishes().query(
+                function (response) {
+                    $scope.dishes = response;
+                    
+                    $ionicLoading.hide();
+                    
+                },
+                function (response) {
+                    $scope.message = "Error: " + response.status + " " + response.statusText;
+                    //$timeout(function () {
+                    //    $ionicLoading.hide();
+                    //}, 1000);
+                });
+            console.log($scope.dishes, $scope.favorites);
+
+            $scope.toggleDelete = function () {
+                $scope.shouldShowDelete = !$scope.shouldShowDelete;
+                console.log($scope.shouldShowDelete);
+            }
+
+            $scope.deleteFavorite = function (index) {
+
+                var confirmPopup = $ionicPopup.confirm({
+                    title: 'Confirm Delete',
+                    template: 'Are you sure you want to delete this item?'
+                });
+
+                confirmPopup.then(function (res) {
+                    if (res) {
+                        console.log('Ok to delete');
+                        favoriteFactory.deleteFromFavorites(index);
+                    } else {
+                        console.log('Canceled delete');
+                    }
+                });
+
+                $scope.shouldShowDelete = false;
+
+            }
+        }])
+        
+
+        .filter('favoriteFilter', function () {
+            return function (dishes, favorites) {
+                var out = [];
+                for (var i = 0; i < favorites.length; i++) {
+                    for (var j = 0; j < dishes.length; j++) {
+                        if (dishes[j].id === favorites[i].id)
+                            out.push(dishes[j]);
+                    }
+                }
+                return out;
+
+            }})
 
 ;
