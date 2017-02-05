@@ -18,7 +18,7 @@
             <h2>Corporate Leadership</h2>
         </div>
         <h3 ng-if="!showCorporateLeaders">{{message}}</h3>
-        <ion-list ng-if="showCorporateLeaders">
+        <ion-list>
           <ion-item ng-repeat="leader in leaders"  class="item item-avatar item-text-wrap">
             <img ng-src="{{baseURL+leader.image}}" alt="{{leader.name}}">
               <h2><strong>{{leader.name}}</strong></h2>

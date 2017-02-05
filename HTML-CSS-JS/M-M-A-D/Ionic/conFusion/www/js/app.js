@@ -4,9 +4,9 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('conFusion', ['ionic', 'conFusion.controllers','conFusion.services'])
+angular.module('conFusion', ['ionic', 'ngCordova','conFusion.controllers','conFusion.services'])
 
-.run(function($ionicPlatform, $rootScope, $ionicLoading) {
+.run(function($ionicPlatform, $rootScope, $ionicLoading, $cordovaSplashscreen,$timeout) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -17,8 +17,11 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers','conFusion.service
     }
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
-      StatusBar.styleDefault();
+      StatusBar.styleDefault(); 
     }
+    $timeout(function(){
+                $cordovaSplashscreen.hide();
+      },20000);
   });
 
   $rootScope.$on('loading:show', function () {
@@ -27,19 +30,19 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers','conFusion.service
         })
     });
 
-    $rootScope.$on('loading:hide', function () {
-        $ionicLoading.hide();
-    });
+  $rootScope.$on('loading:hide', function () {
+      $ionicLoading.hide();
+  });
 
-    $rootScope.$on('$stateChangeStart', function () {
-        console.log('Loading ...');
-        $rootScope.$broadcast('loading:show');
-    });
+  $rootScope.$on('$stateChangeStart', function () {
+      console.log('Loading ...');
+      $rootScope.$broadcast('loading:show');
+  });
 
-    $rootScope.$on('$stateChangeSuccess', function () {
-        console.log('done');
-        $rootScope.$broadcast('loading:hide');
-    });
+  $rootScope.$on('$stateChangeSuccess', function () {
+      console.log('done');
+      $rootScope.$broadcast('loading:hide');
+  });
 
 })
 
@@ -58,7 +61,18 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers','conFusion.service
     views: {
       'mainContent': {
         templateUrl: 'templates/home.html',
-        controller: 'IndexController'
+        controller: 'IndexController',
+        resolve:{
+          leader: ['corporateFactory', function(corporateFactory){
+            return corporateFactory.get({id:3});
+          }],
+          dish: ['menuFactory', function(menuFactory){
+            return menuFactory.get({id:0});
+          }],
+          promotion:['promotionFactory', function(promotionFactory){
+            return promotionFactory.get({id:0});
+          }]
+        }
       }
     }
   })
@@ -68,7 +82,13 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers','conFusion.service
       views: {
         'mainContent': {
           templateUrl: 'templates/aboutus.html',
-          controller: 'AboutController'
+          controller: 'AboutController',
+          resolve:{
+            leaders: ['corporateFactory', function(corporateFactory){
+                return corporateFactory.query();
+            }]
+
+          }
         }
       }
     })
@@ -87,7 +107,13 @@ angular.module('conFusion', ['ionic', 'conFusion.controllers','conFusion.service
       views: {
         'mainContent': {
           templateUrl: 'templates/menu.html',
-          controller: 'MenuController'
+          controller: 'MenuController',
+          resolve:{
+            dishes: ['menuFactory', function(menuFactory){
+                return menuFactory.query();
+            }]
+
+          }
         }
       }
    })
