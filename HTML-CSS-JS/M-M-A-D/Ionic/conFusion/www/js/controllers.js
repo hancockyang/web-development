@@ -51,6 +51,9 @@ angular.module('conFusion.controllers', [])
             }, function(error) {
               console.log(error);
             });
+            $scope.vibrate = function() {
+                $cordovaVibration.vibrate(2000);
+            }
         };
     });
   }else{
